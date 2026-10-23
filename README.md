@@ -24,6 +24,19 @@ Both instances are real Steam users, so lobbies, invites, P2P networking and fri
 2. Enable **Steam Co-op Play** in **Project → Project Settings → Plugins**.
 3. Optional: choose where the second Steam client is stored, in **Editor → Editor Settings → Plugins → Steam Coop Play → Sandbox Root**. The default is `~/.local/share/godot/steam_coop_play`. This is a per-machine setting and isn't saved in the project.
 
+### As a git submodule
+
+You can use a submodule instead of copying the folder in step 1. The repository keeps the plugin in `addons/steam_coop_play/`, so add it in a hidden folder that Godot skips, then link the plugin into `addons/`:
+
+```sh
+git submodule add https://github.com/Polynezeas/steam-coop-play.git .submodules/steam-coop-play
+ln -s ../.submodules/steam-coop-play/addons/steam_coop_play addons/steam_coop_play
+```
+
+Commit both the submodule and the symlink. Clone the project with `git clone --recurse-submodules`, or run `git submodule update --init` after cloning. Otherwise the link points at an empty folder.
+
+To update the plugin later, run `git submodule update --remote .submodules/steam-coop-play` and commit the new submodule pointer.
+
 ## Usage
 
 Press the Steam button in the editor toolbar.
