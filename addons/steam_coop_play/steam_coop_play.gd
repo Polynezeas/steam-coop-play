@@ -3,7 +3,7 @@ extends EditorPlugin
 
 const SANDBOX_ROOT_SETTING = "plugins/steam_coop_play/sandbox_root"
 const SANDBOX_SCRIPT_NAME = "steam_sandbox.sh"
-const ICON_NAME = "steam.svg"
+const ICON_NAME = "icon.svg"
 const STEAM_PID_FILE = "home/.steam/steam.pid"
 const CONNECTION_LOG = "home/.local/share/Steam/logs/connection_log.txt"
 const REQUIRED_COMMANDS = ["bash", "bwrap", "pasta", "nsenter", "steam"]
@@ -24,7 +24,7 @@ func _enter_tree() -> void:
 	_button = Button.new()
 	_button.flat = true
 	_button.toggle_mode = true
-	_button.icon = _steam_icon()
+	_button.icon = _toolbar_icon()
 	_button.pressed.connect(_on_pressed)
 	add_control_to_container(CONTAINER_TOOLBAR, _button)
 	_change_state(State.IDLE)
@@ -140,11 +140,10 @@ func _plugin_dir() -> String:
 	return get_script().resource_path.get_base_dir()
 
 
-func _steam_icon() -> Texture2D:
-	var color := EditorInterface.get_editor_theme().get_color("font_color", "Button")
+func _toolbar_icon() -> Texture2D:
 	var svg := FileAccess.get_file_as_string(_plugin_dir().path_join(ICON_NAME))
 	var image := Image.new()
-	image.load_svg_from_string(svg.replace("#ffffff", "#" + color.to_html(false)), EditorInterface.get_editor_scale())
+	image.load_svg_from_string(svg, EditorInterface.get_editor_scale())
 	return ImageTexture.create_from_image(image)
 
 

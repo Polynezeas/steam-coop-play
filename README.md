@@ -45,4 +45,4 @@ A game finds Steam through files in the home folder, `/dev/shm`, SysV semaphores
 
 ## License
 
-MIT, see [LICENSE](LICENSE). Steam icon from [Simple Icons](https://simpleicons.org) (CC0). Steam is a trademark of Valve Corporation; this plugin is not affiliated with Valve.
+MIT, see [LICENSE](LICENSE). Steam is a trademark of Valve Corporation; this plugin is not affiliated with Valve.
