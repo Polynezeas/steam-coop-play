@@ -9,6 +9,7 @@ const SANDBOX_ROOT_SETTING = "plugins/steam_coop_play/sandbox_root"
 const HOST_STEAM_ROOT = ".steam/root"
 const ICON_NAME = "icon.svg"
 const POLL_INTERVAL = 1.0
+const APP_ID_SETTINGS = ["steam/initialization/app_data/app_id", "steam/initialization/app_id"]
 
 enum State { IDLE, WAITING_FOR_STEAM, RUNNING }
 
@@ -75,15 +76,28 @@ func _on_pressed() -> void:
 
 
 func _launch() -> void:
+	var app_id := _app_id()
+	if app_id <= 0:
+		EditorInterface.get_editor_toaster().push_toast(
+				"Set the App ID in Project Settings → Steam → Initialization. Without it the Steam overlay can freeze the game.",
+				EditorToaster.SEVERITY_WARNING)
 	HOST_LAUNCHER.play_main_scene(
-			STEAM_OVERLAY.environment_for(OS.get_environment("HOME").path_join(HOST_STEAM_ROOT)))
+			STEAM_OVERLAY.environment_for(OS.get_environment("HOME").path_join(HOST_STEAM_ROOT), app_id))
 	var command: Array[String] = [
 		OS.get_executable_path(),
 		"--path", ProjectSettings.globalize_path("res://"),
 		"--remote-debug", HOST_LAUNCHER.debug_address(SANDBOX_STEAM.HOST_ADDRESS),
 	]
-	_game_pid = _sandbox.run(command, STEAM_OVERLAY.environment_for(_sandbox.steam_root()))
+	_game_pid = _sandbox.run(command, STEAM_OVERLAY.environment_for(_sandbox.steam_root(), app_id))
 	_change_state(State.RUNNING)
+
+
+func _app_id() -> int:
+	for setting in APP_ID_SETTINGS:
+		var app_id := int(ProjectSettings.get_setting(setting, 0))
+		if app_id > 0:
+			return app_id
+	return 0
 
 
 func _stop_game() -> void:

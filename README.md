@@ -11,6 +11,7 @@ A Godot editor plugin for testing Steam multiplayer on one Linux machine. One cl
 - Linux, with `bwrap`, `pasta`, `nsenter` and `bash` (most distros include them)
 - Godot 4.4+, official binary (not Flatpak)
 - Native Steam (not Flatpak), with `steam` on your `PATH`
+- Your App ID set in GodotSteam's **Project Settings → Steam → Initialization → App Data → App ID**
 - A second Steam account that can launch your App ID and is friends with your main account
 - About 2.5 GB of disk space for the second Steam client
 
@@ -39,7 +40,7 @@ Both instances run with the Steam overlay, so overlay features such as the invit
 
 A game finds Steam through files in the home folder, `/dev/shm`, SysV semaphores and a fixed localhost port, all shared per Linux user. `steam_sandbox.sh` runs the second client with its own home, `/tmp`, `/dev/shm`, IPC namespace and network namespace (given internet by `pasta`). The second game instance joins those namespaces with `nsenter`, so it connects to the second client. No game code changes are needed.
 
-The overlay is enabled the way Steam does it: `gameoverlayrenderer.so` is preloaded and Steam's Vulkan overlay layer is switched on, using each Steam client's own copy. Inside the sandbox, `pasta` maps `169.254.1.2` to the host's localhost, which is how the second instance reaches the editor's debugger.
+The overlay is enabled the way Steam does it: `gameoverlayrenderer.so` is preloaded, Steam's Vulkan overlay layer is switched on, and `SteamOverlayGameId` is set to your App ID, using each Steam client's own copy. Without the App ID, the overlay can freeze the game. Inside the sandbox, `pasta` maps `169.254.1.2` to the host's localhost, which is how the second instance reaches the editor's debugger.
 
 ## Troubleshooting
 
