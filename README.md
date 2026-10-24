@@ -33,9 +33,13 @@ Clone with `--recurse-submodules`, and update with `git submodule update --remot
 
 Press the Steam button in the toolbar. The first time, the second Steam client installs itself and asks you to log in; tick "Remember me". After that it stays open, and each press starts both instances right away. Press the button again, or Godot's Stop, to stop both. The second instance appears as its own session in the Debugger dock.
 
+Both instances run with the Steam overlay, so overlay features such as the invite dialog work. They always open as separate windows: the plugin turns off embedding in the Game tab for its own launch, because the overlay misbehaves in an embedded game. Your normal Play button is unaffected.
+
 ## How it works
 
 A game finds Steam through files in the home folder, `/dev/shm`, SysV semaphores and a fixed localhost port, all shared per Linux user. `steam_sandbox.sh` runs the second client with its own home, `/tmp`, `/dev/shm`, IPC namespace and network namespace (given internet by `pasta`). The second game instance joins those namespaces with `nsenter`, so it connects to the second client. No game code changes are needed.
+
+The overlay is enabled the way Steam does it: `gameoverlayrenderer.so` is preloaded and Steam's Vulkan overlay layer is switched on, using each Steam client's own copy. Inside the sandbox, `pasta` maps `169.254.1.2` to the host's localhost, which is how the second instance reaches the editor's debugger.
 
 ## Troubleshooting
 

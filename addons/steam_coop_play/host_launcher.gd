@@ -1,6 +1,8 @@
 extends RefCounted
 
 const LOOPBACK_HOSTS = ["127.0.0.1", "localhost", "::1"]
+const EMBED_MODE_SETTING = "run/window_placement/game_embed_mode"
+const EMBED_DISABLED = -1
 
 
 static func play_main_scene(environment: Dictionary) -> void:
@@ -8,9 +10,13 @@ static func play_main_scene(environment: Dictionary) -> void:
 	var multiple_instances_enabled := multiple_instances != null and multiple_instances.button_pressed
 	if multiple_instances_enabled:
 		multiple_instances.button_pressed = false
+	var settings := EditorInterface.get_editor_settings()
+	var embed_mode = settings.get_setting(EMBED_MODE_SETTING)
+	settings.set_setting(EMBED_MODE_SETTING, EMBED_DISABLED)
 	var previous_environment := _apply_environment(environment)
 	EditorInterface.play_main_scene()
 	_apply_environment(previous_environment)
+	settings.set_setting(EMBED_MODE_SETTING, embed_mode)
 	if multiple_instances_enabled:
 		multiple_instances.button_pressed = true
 
