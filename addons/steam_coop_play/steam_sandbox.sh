@@ -5,6 +5,7 @@ ROOT="${STEAM_SANDBOX_ROOT:?set STEAM_SANDBOX_ROOT to the sandbox folder}"
 SANDBOX_HOME="$ROOT/home"
 SHM="/dev/shm/steam-coop-play-$(id -u)"
 DNS="169.254.1.1"
+HOST_ADDRESS="${STEAM_SANDBOX_HOST_ADDRESS:-}"
 CLEAN_ENV=(-u XDG_DATA_HOME -u XDG_CONFIG_HOME -u XDG_CACHE_HOME -u XDG_STATE_HOME HOME="$SANDBOX_HOME")
 
 case "${1:-}" in
@@ -30,8 +31,12 @@ case "${1:-}" in
 			sleep 0.1
 		done
 		child_pid="$(grep -o '"child-pid": *[0-9]*' "$info" | grep -o '[0-9]*$')"
+		host_mapping=()
+		if [[ -n "$HOST_ADDRESS" ]]; then
+			host_mapping=(--map-host-loopback "$HOST_ADDRESS")
+		fi
 		pasta --config-net --quiet --no-netns-quit --no-map-gw -t none -u none -T none -U none \
-			--dns-forward "$DNS" "$child_pid"
+			--dns-forward "$DNS" "${host_mapping[@]}" "$child_pid"
 		wait "$bwrap_pid" || true
 		pkill -f "^pasta .* $child_pid\$" || true
 		;;
