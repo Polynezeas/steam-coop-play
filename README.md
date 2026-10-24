@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assetlib/icon.png" alt="Steam Co-op Play logo" width="128">
+</p>
+
 # Steam Co-op Play
 
 A Godot editor plugin for testing Steam multiplayer on one Linux machine. One click runs your main scene twice: once on your normal Steam account, and once on a second account through a sandboxed second Steam client. Both are real Steam users, so lobbies, invites and P2P work like on two PCs.
