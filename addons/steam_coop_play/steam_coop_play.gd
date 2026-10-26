@@ -6,6 +6,7 @@ const STEAM_OVERLAY = preload("steam_overlay.gd")
 const HOST_LAUNCHER = preload("host_launcher.gd")
 const REQUIREMENTS = preload("requirements.gd")
 const SANDBOX_ROOT_SETTING = "plugins/steam_coop_play/sandbox_root"
+const SECOND_OVERLAY_SETTING = "plugins/steam_coop_play/overlay_in_second_instance"
 const HOST_STEAM_ROOT = ".steam/root"
 const ICON_NAME = "icon.svg"
 const POLL_INTERVAL = 1.0
@@ -88,7 +89,10 @@ func _launch() -> void:
 		"--path", ProjectSettings.globalize_path("res://"),
 		"--remote-debug", HOST_LAUNCHER.debug_address(SANDBOX_STEAM.HOST_ADDRESS),
 	]
-	_game_pid = _sandbox.run(command, STEAM_OVERLAY.environment_for(_sandbox.steam_root(), app_id))
+	var sandbox_environment := {}
+	if EditorInterface.get_editor_settings().get_setting(SECOND_OVERLAY_SETTING):
+		sandbox_environment = STEAM_OVERLAY.environment_for(_sandbox.steam_root(), app_id)
+	_game_pid = _sandbox.run(command, sandbox_environment)
 	_change_state(State.RUNNING)
 
 
@@ -116,6 +120,13 @@ func _register_settings() -> void:
 		"name": SANDBOX_ROOT_SETTING,
 		"type": TYPE_STRING,
 		"hint": PROPERTY_HINT_GLOBAL_DIR,
+	})
+	if not settings.has_setting(SECOND_OVERLAY_SETTING):
+		settings.set_setting(SECOND_OVERLAY_SETTING, false)
+	settings.set_initial_value(SECOND_OVERLAY_SETTING, false, false)
+	settings.add_property_info({
+		"name": SECOND_OVERLAY_SETTING,
+		"type": TYPE_BOOL,
 	})
 
 

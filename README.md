@@ -34,7 +34,7 @@ Clone with `--recurse-submodules`, and update with `git submodule update --remot
 
 Press the Steam button in the toolbar. The first time, the second Steam client installs itself and asks you to log in; tick "Remember me". After that it stays open, and each press starts both instances right away. Press the button again, or Godot's Stop, to stop both. The second instance appears as its own session in the Debugger dock.
 
-Both instances run with the Steam overlay, so overlay features such as the invite dialog work. They always open as separate windows: the plugin turns off embedding in the Game tab for its own launch, because the overlay misbehaves in an embedded game. Your normal Play button is unaffected.
+The host instance runs with the Steam overlay, so overlay features such as the invite dialog work. The second instance runs without it by default, because Steam's overlay can deadlock in a second client and freeze that window; invite from the host and accept in the second Steam client's chat. Turn on **Editor Settings → Plugins → Steam Coop Play → Overlay In Second Instance** to try it anyway. They always open as separate windows: the plugin turns off embedding in the Game tab for its own launch, because the overlay misbehaves in an embedded game. Your normal Play button is unaffected.
 
 ## How it works
 
